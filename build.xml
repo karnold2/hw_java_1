@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="simple" 	basedir=".">
+    <target name="create_run_jar">
+        <echo>start</echo>
+		<antcall target="clean"/>
+		<antcall target="javac"/>
+		<antcall target="run"/>
+		<echo>end</echo>
+	</target>
+	
+	<target name="clean">
+		<delete file=".\bin\HelloWorld.class"/>	
+	</target>
+	
+	<target name="javac">
+		<javac srcdir="${basedir}\src" destdir="${basedir}\bin"/>		
+	</target>
+	
+	<target name="buildjar">
+		<jar destfile="${basedir}\HelloWorld.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="HelloWorld"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="${basedir}\bin"/>
+        </jar>
+    </target>
+	
+	<target name="run">
+		<java classname="HelloWorld.Main"/>
+	</target>
+	
+</project>

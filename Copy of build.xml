@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--Types of errors that will cause Jenkins to complain about a busted build:
+		1. Ant file structurally incorrect, like the default target does not exist in the ant file.
+		2. A javac error like 
+			[javac] C...\src\HelloWorld.java:7: error: cannot find symbol JOptionasdfasdfasdfPane
+			[javac] JOptionasdfasdfasdfPane.showMessageDialog(null,"HI");
+-->
+<project default="create_run_jar" name="Create Runnable Jar for Project HelloWorld with Jar-in-Jar Loader" 	basedir=".">
+    <!--ANT 1.7 or + is required-->
+    <target name="create_run_jar">
+        <echo>start</echo>
+		<antcall target="clean"/>
+		<antcall target="javac"/>
+		<antcall target="buildjar"/>
+		<echo>end</echo>
+	</target>
+	
+	<target name="clean">
+		<delete file=".\bin\HelloWorld.class"/>
+		<delete file=".\HelloWorld.jar"/>		
+	</target>
+	
+	<target name="javac">
+		<javac srcdir="${basedir}\src" destdir="${basedir}\bin"/>		
+	</target>
+	
+	<target name="buildjar">
+		<jar destfile="${basedir}\HelloWorld.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="HelloWorld"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="${basedir}\bin"/>
+        </jar>
+    </target>
+</project>
